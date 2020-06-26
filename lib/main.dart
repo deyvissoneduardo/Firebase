@@ -20,7 +20,6 @@ void main() async {
   /*
    *Salva no Banco de dados
    * com identificado geradd pelo firebase
-   */
   DocumentReference ref =  await banco.collection("noticias")
       .add(
       {
@@ -28,6 +27,42 @@ void main() async {
         "descricao": "texto do Campeão da America"
       });
   print("salvos: " + ref.documentID);
+  */
+  // ---------------------------------------------------------------------//
+  /*
+   * Deleta usuario
+   */
+  // banco.collection("usuarios").document("003").delete();
+  // ---------------------------------------------------------------------//
+  /*
+   * Recuperando um unico por id
+   */
+  /*
+  DocumentSnapshot snapshot = await banco.collection("usuarios")
+  *
+  .document("002")
+  .get();
+  var dados = snapshot.data;
+  print("Dados recuperados, Nome: " + dados['nome'] + ' idade: ' + dados["idade"]);
+  */
+  // ---------------------------------------------------------------------//
+  /* QuerySnapshot snapshot = await banco.collection("usuarios")
+  .getDocuments();
+  // listando todos usuarios
+  for ( DocumentSnapshot item in snapshot.documents ){
+    var dados = item.data;
+    print( "dados usuarios: " + dados.toString());
+  }*/
+  // ---------------------------------------------------------------------//
+  /*
+  * Notifica sempre que houver alteração na colecao
+   */
+  banco.collection("usuarios").snapshots().listen((snapshots) {
+    for (DocumentSnapshot item in snapshots.documents) {
+      var dados = item.data;
+      print("dados usuarios: " + dados.toString());
+    }
+  });
   runApp(AppFirebase());
 }
 
