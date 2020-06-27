@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  var pesquisa = "edu";
   Firestore banco = Firestore.instance; // recupera a instancia do firebase
   /*
    // Salva no Banco de dados Para atualizar manten o document
@@ -58,11 +59,14 @@ void main() async {
       .collection("usuarios")
       // .where("nome", isEqualTo: "deyvisson")
       //.where("idade", isEqualTo: 22)
-      .where("idade", isGreaterThan: 20) // maior que
+      //.where("idade", isGreaterThan: 20) // maior que
       //.where("idade", isLessThan: 35) // menor que
-      .orderBy("idade", descending: true)
-      .orderBy("nome", descending: false)
-      .limit(2)
+      // .orderBy("idade", descending: true)
+      //.orderBy("nome", descending: false)
+      //.limit(2)
+
+      .where("nome", isGreaterThanOrEqualTo: pesquisa)
+      .where("nome", isLessThanOrEqualTo: pesquisa + "\uf8ff")
       .getDocuments();
 
   for (DocumentSnapshot item in querySnapshot.documents) {
