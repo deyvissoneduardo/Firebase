@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,7 +54,6 @@ void main() async {
       print("dados usuarios: " + dados.toString());
     }
   });
-   */
   // Apliancando filtros
   QuerySnapshot querySnapshot = await banco
       .collection("usuarios")
@@ -72,6 +72,34 @@ void main() async {
   for (DocumentSnapshot item in querySnapshot.documents) {
     var dados = item.data;
     print("dados usuarios: " + dados.toString());
+  }
+  // ---------------------------------------------------------------------//
+  // Cria usuario
+  FirebaseAuth auth = FirebaseAuth.instance;
+
+  // Criando um usuario com email e senha
+  String email = 'teste@gmail.com';
+  String senha = '123456';
+
+  auth.createUserWithEmailAndPassword(email: email, password: senha)
+  .then((firebaseUser) {
+    print('Cadastrado com email ' + firebaseUser.email);
+  }).catchError((error) {
+    print('Error ao cadastra ' + error.toString());
+  });
+   */
+  // ---------------------------------------------------------------------//
+  // Autentica usuario
+  FirebaseAuth auth = FirebaseAuth.instance;
+
+  String email = 'teste@gmail.com';
+  String senha = '123456';
+  FirebaseUser user = await auth.currentUser();
+  if (user != null ){
+    // logado
+    print('usuario logado com email: ' + user.email);
+  }else {
+    print('usuario nao logado');
   }
   runApp(AppFirebase());
 }
