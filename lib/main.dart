@@ -94,11 +94,26 @@ void main() async {
 
   String email = 'teste@gmail.com';
   String senha = '123456';
+
+  // deslogar usuairio
+  //auth.signOut();
+
+  // logando usuario
+  auth.signInWithEmailAndPassword(
+      email: email,
+      password: senha)
+    .then((FirebaseUser) {
+    print('Logado com email ' + FirebaseUser.email);
+  }).catchError((error) {
+    print('Error ao logar com email ' + error.toString());
+  });
+
   FirebaseUser user = await auth.currentUser();
-  if (user != null ){
+
+  if (user != null) {
     // logado
     print('usuario logado com email: ' + user.email);
-  }else {
+  } else {
     print('usuario nao logado');
   }
   runApp(AppFirebase());
