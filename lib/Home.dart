@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -26,6 +27,20 @@ class _HomeState extends State<Home> {
     });
   }
 
+  /* metodo que faz o upload e cria pasta no firebase*/
+  Future _uploadImage() async {
+
+    // Referencia arquivo
+    FirebaseStorage storage = FirebaseStorage.instance;
+    StorageReference pastaRaiz = storage.ref();
+    StorageReference articles = pastaRaiz
+        .child("photos")
+        .child("photo1.jpg");
+
+    //Faz upload da imagem
+    articles.putFile(_image);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +60,12 @@ class _HomeState extends State<Home> {
               onPressed: () {
                 _recoverImage(false);
               }),
-          _image == null ? Container() : Image.file(_image)
+          _image == null ? Container() : Image.file(_image),
+          RaisedButton(
+              child: Text("Upload da Imagem"),
+              onPressed: () {
+                _uploadImage();
+              }),
         ],
       ),
     );
