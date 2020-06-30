@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'Home.dart';
+
 void main() async {
+  /*
   WidgetsFlutterBinding.ensureInitialized();
   var pesquisa = "edu";
   Firestore banco = Firestore.instance; // recupera a instancia do firebase
-  /*
    // Salva no Banco de dados Para atualizar manten o document
   banco.collection("usuarios")
       .document("002")
@@ -87,7 +89,6 @@ void main() async {
   }).catchError((error) {
     print('Error ao cadastra ' + error.toString());
   });
-   */
   // ---------------------------------------------------------------------//
   // Autentica usuario
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -116,12 +117,10 @@ void main() async {
   } else {
     print('usuario nao logado');
   }
-  runApp(AppFirebase());
+
+   */
+  runApp(MaterialApp(
+    home: Home(),
+  ));
 }
 
-class AppFirebase extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
