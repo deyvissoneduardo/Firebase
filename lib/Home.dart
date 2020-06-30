@@ -13,6 +13,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   File _image; // retorno do metodo
   File _imageSelected; // recupera a imagem selecionada
+  String _statusUpload = "Upload não iniciado";
+  String _revovedImage = null;
 
   /* metodo para recupera imagem */
   Future _recoverImage(bool isCamera) async {
@@ -29,18 +31,42 @@ class _HomeState extends State<Home> {
 
   /* metodo que faz o upload e cria pasta no firebase*/
   Future _uploadImage() async {
-
     // Referencia arquivo
     FirebaseStorage storage = FirebaseStorage.instance;
     StorageReference pastaRaiz = storage.ref();
-    StorageReference articles = pastaRaiz
-        .child("photos")
-        .child("photo1.jpg");
+    StorageReference articles = pastaRaiz.child("photos").child("photo1.jpg");
 
     //Faz upload da imagem
-    articles.putFile(_image);
+    StorageUploadTask task = articles.putFile(_image);
+
+    // Controlar o progesso do upload
+    task.events.listen((StorageTaskEvent storageEvent) {
+      if (storageEvent.type == StorageTaskEventType.progress) {
+        setState(() {
+          _statusUpload = "Carregando arquivo";
+        });
+      } else if (storageEvent.type == StorageTaskEventType.success) {
+        setState(() {
+          _statusUpload = "Carregado com sucesso";
+        });
+      }
+    });
+
+    // Recupera url da imagem
+    task.onComplete
+      .then((StorageTaskSnapshot snapshot ) {
+       _recoverUrlImage( snapshot );
+    });
   }
 
+  /* Download da image */
+  Future _recoverUrlImage(StorageTaskSnapshot snapshot) async {
+    String url = await snapshot.ref.getDownloadURL();
+
+    setState(() {
+      _revovedImage = url;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +75,7 @@ class _HomeState extends State<Home> {
       ),
       body: Column(
         children: <Widget>[
+          Text(_statusUpload),
           RaisedButton(
             child: Text("Camera"),
             onPressed: () {
@@ -61,11 +88,12 @@ class _HomeState extends State<Home> {
                 _recoverImage(false);
               }),
           _image == null ? Container() : Image.file(_image),
-          RaisedButton(
+          _image == null ? Container() : RaisedButton(
               child: Text("Upload da Imagem"),
               onPressed: () {
                 _uploadImage();
               }),
+          if (_revovedImage == null) Container() else Image.network( _revovedImage )
         ],
       ),
     );
